@@ -2,10 +2,9 @@
 /**
  * Global Proxy (Next.js 16) with Auth.js v5
  * -----------------------------------------
- * - Wrap the handler with `auth(...)` to have `req.auth` injected.
- * - We define a narrowed type for the request so TS knows about `req.auth`.
- * - RBAC rules:
- *    GUEST → public routes only; others redirect to /auth
+ * - Wrap the handler with `auth(...)` to inject `req.auth`.
+ * - RBAC:
+ *    GUEST → public routes only; otherwise redirect to /auth
  *    USER  → may access /user/** (and public); others redirect to /user
  *    ADMIN → access everywhere
  */
@@ -15,15 +14,13 @@ import type { Session } from "next-auth";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-// Narrowed request type (Auth.js wrapper attaches `auth`)
+// Narrowed request type so TS knows about `req.auth`
 type NextRequestWithAuth = NextRequest & { auth: Session | null };
 
-// Small helper
 const startsWith = (pathname: string, base: string) =>
   pathname === base || pathname.startsWith(base + "/");
 
-// Wrap the proxy so `req.auth` is available at runtime.
-// We cast `req` to `NextRequestWithAuth` to make TS aware of `.auth`.
+// Wrap the proxy so `req.auth` is available at runtime
 export const proxy = withAuth((req: NextRequest) => {
   const r = req as NextRequestWithAuth;
   const url = r.nextUrl;
@@ -40,18 +37,18 @@ export const proxy = withAuth((req: NextRequest) => {
     return NextResponse.next();
   }
 
-  // Session injected by the wrapper
+  // Read session from wrapper
   const session = r.auth;
   const role = session?.user?.role ?? null;
 
-  // Not authenticated → redirect to /auth with callbackUrl
+  // Guest → redirect to /auth with callbackUrl
   if (!session) {
     const login = new URL("/auth", r.url);
     login.searchParams.set("callbackUrl", url.pathname + url.search);
     return NextResponse.redirect(login);
   }
 
-  // USER role → only allow /user/**
+  // USER → only /user/**
   if (role === "USER") {
     if (pathname === "/user" || startsWith(pathname, "/user")) {
       return NextResponse.next();
@@ -71,9 +68,7 @@ export const proxy = withAuth((req: NextRequest) => {
   return NextResponse.redirect(login);
 });
 
-// Limit the proxy to non-asset, non-internal paths
+// Limit proxy to protected sections (no regex with capturing groups)
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(css|js|map|png|jpg|jpeg|gif|svg|ico|webp|woff2?)$).*)",
-  ],
+  matcher: ["/admin/:path*", "/user/:path*"],
 };
