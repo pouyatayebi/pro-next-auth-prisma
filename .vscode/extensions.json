@@ -1,0 +1,13 @@
+{
+  "//": "Recommended extensions to boost productivity in this stack.",
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "csstools.postcss",
+    "prisma.prisma",
+    "eamodio.gitlens",
+    "streetsidesoftware.code-spell-checker",
+    "EditorConfig.EditorConfig"
+  ]
+}
