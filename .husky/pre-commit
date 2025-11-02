@@ -1,6 +1,1 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# Run lint-staged to ensure consistent quality before every commit.
-npx lint-staged
-
+npx --no-install lint-staged

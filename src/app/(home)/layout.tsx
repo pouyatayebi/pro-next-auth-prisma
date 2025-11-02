@@ -6,8 +6,6 @@
  * Keeps root layout intact while giving (home) its own shell.
  */
 
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import type { ReactNode } from "react";
 
 export default function HomeGroupLayout({ children }: { children: ReactNode }) {
@@ -22,18 +20,6 @@ export default function HomeGroupLayout({ children }: { children: ReactNode }) {
             <p className="mt-1 text-sm text-muted-foreground">
               {process.env.NEXT_PUBLIC_APP_SLOGAN ?? "Build fast. Ship polished."}
             </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button asChild variant="outline">
-              <Link href="/auth" prefetch>
-                Sign in
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link href="/auth" prefetch>
-                Get started
-              </Link>
-            </Button>
           </div>
         </div>
         {children}

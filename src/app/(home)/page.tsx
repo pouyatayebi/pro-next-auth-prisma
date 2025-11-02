@@ -20,11 +20,6 @@ export default function HomePage() {
           <p className="text-sm text-muted-foreground">
             Credentials, Email verification and Google OAuth, with role-based access (USER/ADMIN).
           </p>
-          <Button asChild>
-            <Link href="/auth" prefetch>
-              Sign in / Register
-            </Link>
-          </Button>
         </CardContent>
       </Card>
 
@@ -42,7 +37,7 @@ export default function HomePage() {
                 User dashboard
               </Link>
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="default">
               <Link href="/admin" prefetch>
                 Admin panel
               </Link>

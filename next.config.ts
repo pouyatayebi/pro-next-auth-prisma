@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: ["@prisma/client"],
+  outputFileTracingIncludes: {
+    "app/**": ["node_modules/.prisma/client/**"],
+  },
   reactCompiler: true,
   async redirects() {
     return [
